@@ -13,16 +13,14 @@
 --- @type NGsessions.config
 local default_confg = {
     manual = false,
-    path = vim.fn.stdpath("data") .. "/sessions",
+    path = vim.fn.stdpath("data") .. "/nvim-gitsessions",
 }
 local config = vim.deepcopy(default_confg)
 
 local M = {}
 
 function M.setup(user_config)
-    local config = vim.tbl_deep_extend("force", config, user_config)
-    vim.g.sessions_path = config.path
-    vim.g.sessions_manual = config.manual
+    local config = vim.tbl_deep_extend("force", default_confg, user_config)
 end
 
 --- @type NGsessions.config.Config
