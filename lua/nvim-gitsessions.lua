@@ -68,8 +68,20 @@ function M.setup(options)
         vim.fn.mkdir(M.config.path, "p")
     end
 
-    if config.manual then
-        -- TODO: add commands
+    if not config.manual then
+        local agroup = vim.api.nvim_create_augroup("nvim_gitsessions", { clear = true })
+        vim.api.nvim_create_autocmd({ "VimLeave" }, {
+            callback = function()
+                M.save()
+            end,
+            group = agroup,
+        })
+        vim.api.nvim_create_autocmd({ "VimEnter" }, {
+            callback = function()
+                M.load()
+            end,
+            group = agroup,
+        })
     end
 
     command("NvimGitSessionsSave", M.save, { nargs = 0 })
