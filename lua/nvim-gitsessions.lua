@@ -72,12 +72,20 @@ function M.setup(options)
         local agroup = vim.api.nvim_create_augroup("nvim_gitsessions", { clear = true })
         vim.api.nvim_create_autocmd({ "VimLeave" }, {
             callback = function()
+                -- check if buffer git COMMIT_MSG
+                if vim.bo.filetype == "gitcommit" then
+                    return
+                end
                 M.save()
             end,
             group = agroup,
         })
         vim.api.nvim_create_autocmd({ "VimEnter" }, {
             callback = function()
+                -- check if vim opened with file specified in session
+                if vim.fn.argc() > 0 then
+                    return
+                end
                 M.load()
             end,
             group = agroup,
