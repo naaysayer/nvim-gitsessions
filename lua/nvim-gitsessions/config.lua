@@ -12,7 +12,7 @@
 
 --- @type NGsessions.config
 local default_confg = {
-    manual = false,
+    manual = true,
     path = vim.fn.stdpath("data") .. "/nvim-gitsessions",
 }
 local config = vim.deepcopy(default_confg)
