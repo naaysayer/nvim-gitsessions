@@ -4,6 +4,8 @@ local M = {
     path = nil
 }
 
+local ignore_session = false
+
 function M.set_path(path)
     M.path = path
 end
@@ -12,27 +14,23 @@ function M.get_sessionfilename()
     return (M.path .. "/" .. git.repo_name() .. "-" .. git.get_branch() .. ".vim"):gsub("\n", "")
 end
 
+local function session_exist(session_filename)
+    return vim.fn.filereadable(session_filename) == 1
+end
+
 function M.save()
     if not git.is_git_repo() then
         return
     end
 
     local sessionfile = M.get_sessionfilename()
-
     vim.cmd("mksession! " .. sessionfile)
 end
 
 function M.load()
-    if not git.is_git_repo() then
-        return
-    end
-
-    if vim.fn.isdirectory(M.path) then
-        local sessionfile = M.get_sessionfilename()
-        if vim.fn.filereadable(sessionfile) == 1 then
-            vim.cmd("source " .. sessionfile)
-        else
-        end
+    local sessionfile = M.get_sessionfilename()
+    if session_exist(sessionfile) then
+        vim.cmd("source " .. sessionfile)
     end
 end
 
@@ -54,7 +52,7 @@ end
 
 local function auto_save()
     -- check if buffer git COMMIT_MSG
-    if vim.bo.filetype == "gitcommit" then
+    if vim.bo.filetype == "gitcommit" or ignore_session then
         return
     end
     M.save()
@@ -63,6 +61,9 @@ end
 local function auto_load()
     -- todo: check if vim opened with file specified in session
     if vim.fn.argc() ~= 0 then
+        if session_exist(M.get_sessionfilename()) then
+            ignore_session = true
+        end
         return
     end
     M.load()
