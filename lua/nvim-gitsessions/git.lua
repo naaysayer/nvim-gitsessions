@@ -17,8 +17,7 @@ end
 
 function M.repo_name()
     local root = M.get_git_root()
-    local repo_name = vim.fn.system("basename " .. root)
-    return repo_name
+    return root:match("^.+/(.+)$") or root
 end
 
 return M
