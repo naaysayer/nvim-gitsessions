@@ -12,7 +12,7 @@ end
 
 function M.is_git_repo()
     local is_git_repo = vim.fn.system("git rev-parse --is-inside-work-tree")
-    return is_git_repo
+    return vim.v.shell_error == 0
 end
 
 function M.repo_name()

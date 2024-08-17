@@ -1,5 +1,4 @@
 local git = require("nvim-gitsessions.git")
-local autocommand = vim.api.nvim_create_user_command
 
 local M = {
     path = nil
@@ -15,30 +14,25 @@ end
 
 function M.save()
     if not git.is_git_repo() then
-        print("Not a git repository")
         return
     end
 
     local sessionfile = M.get_sessionfilename()
-    print("Saving session to " .. sessionfile)
+
     vim.cmd("mksession! " .. sessionfile)
 end
 
 function M.load()
     if not git.is_git_repo() then
-        print("Not a git repository")
         return
     end
+
     if vim.fn.isdirectory(M.path) then
         local sessionfile = M.get_sessionfilename()
         if vim.fn.filereadable(sessionfile) == 1 then
-            print("Loading session from " .. sessionfile)
             vim.cmd("source " .. sessionfile)
         else
-            print("Session file not found")
         end
-    else
-        print("Path does not exist")
     end
 end
 
@@ -47,7 +41,6 @@ function M.list()
     local sessions = {}
 
     if not vim.fn.isdirectory(M.path) then
-        print("Path does not exist")
         return nil
     end
 
@@ -56,7 +49,7 @@ function M.list()
             table.insert(sessions, string.sub(file, 1, string.len(project) + 1))
         end
     end
-    print(sessions)
+    return sessions
 end
 
 local function auto_save()
@@ -64,22 +57,22 @@ local function auto_save()
     if vim.bo.filetype == "gitcommit" then
         return
     end
-    M.sessions.save()
+    M.save()
 end
 
 local function auto_load()
-    -- check if vim opened with file specified in session
-    if vim.fn.argc() > 0 then
+    -- todo: check if vim opened with file specified in session
+    if vim.fn.argc() ~= 0 then
         return
     end
-    M.sessions.load()
+    M.load()
 end
 
 function M.autocmd_init()
-        local agroup = vim.api.nvim_create_augroup("nvim_gitsessions", { clear = true })
+    local group = vim.api.nvim_create_augroup("nvim_gitsessions", { clear = true })
 
-        vim.api.nvim_create_autocmd({ "VimLeave" }, { callback = auto_save, group = agroup, })
-        vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = auto_load, group = agroup, })
+    vim.api.nvim_create_autocmd({ "UILeave" }, { callback = auto_save, group = group, })
+    vim.api.nvim_create_autocmd("UIEnter", { callback = auto_load, group = group, nested = true, once = true })
 end
 
 return M

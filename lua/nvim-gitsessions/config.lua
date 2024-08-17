@@ -20,7 +20,7 @@ local config = vim.deepcopy(default_confg)
 local M = {}
 
 function M.setup(user_config)
-    local config = vim.tbl_deep_extend("force", default_confg, user_config)
+    config = vim.tbl_deep_extend("force", default_confg, user_config)
 end
 
 --- @type NGsessions.config.Config

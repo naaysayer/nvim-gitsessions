@@ -14,13 +14,15 @@ function M.setup(options)
     if options then
         M.config.setup(options)
     end
-    M.sessions.set_path(M.config.path)
 
     if vim.fn.isdirectory(M.config.path) == 0 then
         vim.fn.mkdir(M.config.path, "p")
     end
 
-    if not config.manual then
+    M.sessions.set_path(M.config.path)
+
+    if not M.config.manual then
+        M.sessions.autocmd_init()
     end
 
     command("NvimGitSessionsSave", M.sessions.save, { nargs = 0 })
