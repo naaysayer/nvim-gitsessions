@@ -1,11 +1,12 @@
 # nvim-gitsessions
 
+Lua version of [gitsession vim plugin](https://github.com/wting/gitsessions.vim/blob/master/plugin/gitsessions.vim)
 Neovim plugin that automatically saves and loads sessions for a git based projects, based on branch name.
 
 ## Note
 This plugin is still in development, so there is are unknown bugs and missing features.
 
-Basically it uses vim :mksession and :source command to save and load sessions,
+Basically it uses [(neo)vim :mksession](https://neovim.io/doc/user/usr_21.html#21.4) and :source commands to save and load sessions,
 i am just tired to use them manually.
 
 ## Usage
