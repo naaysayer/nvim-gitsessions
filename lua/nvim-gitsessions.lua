@@ -27,6 +27,7 @@ function M.setup(options)
 
     command("NvimGitSessionsSave", M.sessions.save, { nargs = 0 })
     command("NvimGitSessionsLoad", M.sessions.load, { nargs = 0 })
+    command("NvimGitSessionsExplore", M.sessions.explore, { nargs = 0 })
 end
 
 return M

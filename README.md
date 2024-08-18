@@ -29,5 +29,6 @@ Plugin provides commands:
 
     NvimGitSessionsSave - save current session
     NvimGitSessionsLoad - load session for current branch
+    NvimGitSessionsExplore - open nvim-gitsessions directory in netrw
 
 # License MIT

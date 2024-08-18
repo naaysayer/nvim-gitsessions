@@ -1,12 +1,17 @@
 local M = {}
 
+local function cmd_output(s)
+    local output = vim.fn.system(s)
+    return output:gsub("\n", "")
+end
+
 function M.get_branch()
-    local branch = vim.fn.system("git rev-parse --abbrev-ref HEAD")
+    local branch = cmd_output("git rev-parse --abbrev-ref HEAD")
     return branch
 end
 
 function M.get_git_root()
-    local git_root = vim.fn.system("git rev-parse --show-toplevel")
+    local git_root = cmd_output("git rev-parse --show-toplevel")
     return git_root
 end
 

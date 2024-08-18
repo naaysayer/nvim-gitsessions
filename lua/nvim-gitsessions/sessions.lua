@@ -11,7 +11,7 @@ function M.set_path(path)
 end
 
 function M.get_sessionfilename()
-    return (M.path .. "/" .. git.repo_name() .. "-" .. git.get_branch() .. ".vim"):gsub("\n", "")
+    return (M.path .. "/" .. git.repo_name() .. "/" .. git.get_branch() .. ".vim"):gsub("\n", "")
 end
 
 local function session_exist(session_filename)
@@ -23,7 +23,12 @@ function M.save()
         return
     end
 
-    local sessionfile = M.get_sessionfilename()
+    local projectdir = M.path .. "/" .. git.repo_name()
+    if vim.fn.isdirectory(projectdir) == 0 then
+        vim.fn.mkdir(projectdir, "p")
+    end
+
+    local sessionfile = projectdir .. "/" .. git.get_branch() .. ".vim"
     vim.cmd("mksession! " .. sessionfile)
 end
 
@@ -32,22 +37,6 @@ function M.load()
     if session_exist(sessionfile) then
         vim.cmd("source " .. sessionfile)
     end
-end
-
-function M.list()
-    local project = git.repo_name()
-    local sessions = {}
-
-    if not vim.fn.isdirectory(M.path) then
-        return nil
-    end
-
-    for _, file in ipairs(vim.fn.readdir(M.path)) do
-        if string.find(file, M.path .. "/" .. project .. "-") then
-            table.insert(sessions, string.sub(file, 1, string.len(project) + 1))
-        end
-    end
-    return sessions
 end
 
 local function auto_save()
@@ -75,5 +64,10 @@ function M.autocmd_init()
     vim.api.nvim_create_autocmd({ "UILeave" }, { callback = auto_save, group = group, })
     vim.api.nvim_create_autocmd("UIEnter", { callback = auto_load, group = group, nested = true, once = true })
 end
+
+function M.explore()
+    vim.cmd("Hexplore! " .. M.path)
+end
+
 
 return M
